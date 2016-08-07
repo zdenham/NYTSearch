@@ -2,13 +2,14 @@ package scope.nytsearch;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -26,7 +27,7 @@ public class searchActivity extends AppCompatActivity
 
     EditText etSearch;
     Button btnSearch;
-    GridView gvResults;
+    RecyclerView rvResults;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
 
@@ -36,17 +37,27 @@ public class searchActivity extends AppCompatActivity
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        findViews();
+        setUpViews();
 
     }
 
-    public void findViews(){
+    public void setUpViews(){
         articles = new ArrayList<Article>();
         etSearch = (EditText)findViewById(R.id.etSearch);
         btnSearch = (Button)findViewById(R.id.btnSearch);
-        gvResults = (GridView)findViewById(R.id.gvResults);
+        rvResults = (RecyclerView)findViewById(R.id.rvResults);
         adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
+        rvResults.setAdapter(adapter);
+        rvResults.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+
+//        rvResults.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+//                Intent i = new Intent(getApplicationContext(), articleActivity.class);
+//                i.putExtra("url", articles.get(position).getLink());
+//                startActivity(i);
+//            }
+//        });
     }
 
     public void onArticleSearch(View v) {
