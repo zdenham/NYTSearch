@@ -1,6 +1,7 @@
 package scope.nytsearch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,14 +48,22 @@ public class ArticleArrayAdapter extends
 
         TextView textView = holder.tvTitle;
         ImageView imageView = holder.ivCover;
+        final String url = article.getLink();
 
         textView.setText(article.getHeadline());
 
         if(article.getImagePath() != "") {
             Picasso.with(mContext).load(article.getImagePath()).into(imageView);
-        } else {
-            Picasso.with(mContext).load(R.mipmap.ic_launcher).into(imageView);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(mContext, articleActivity.class);
+                i.putExtra("url", url);
+                mContext.startActivity(i);
+            }
+        });
     }
 
     @Override

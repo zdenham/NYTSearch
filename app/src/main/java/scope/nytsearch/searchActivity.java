@@ -10,11 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +32,8 @@ public class searchActivity extends AppCompatActivity
     RecyclerView rvResults;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    String query;
+    Boolean adding = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +52,53 @@ public class searchActivity extends AppCompatActivity
         rvResults = (RecyclerView)findViewById(R.id.rvResults);
         adapter = new ArticleArrayAdapter(this, articles);
         rvResults.setAdapter(adapter);
-        rvResults.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        rvResults.setLayoutManager(manager);
+        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(manager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                loadMoreData();
+            }
+        });
+    }
 
-//        rvResults.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-//                Intent i = new Intent(getApplicationContext(), articleActivity.class);
-//                i.putExtra("url", articles.get(position).getLink());
-//                startActivity(i);
-//            }
-//        });
+    public void loadMoreData(){
+        Toast.makeText(getApplicationContext(), "loading more data", Toast.LENGTH_LONG).show();
+        adding = true;
+        String synonymHunter;
+        if(query.contains(" ")){
+            synonymHunter = query.substring(0, query.indexOf(" "));
+        } else {
+            synonymHunter = query;
+        }
+
+        String url = "http://words.bighugelabs.com/api/2/ddf363b16b946ad3f805bcf7eebd7202/" + synonymHunter + "/json";
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                JSONArray names = response.names();
+                try {
+                    query = response.getJSONObject(names.getString(0)).getJSONArray("syn").getString(0);
+                    onArticleSearch(etSearch);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
     }
 
     public void onArticleSearch(View v) {
-        String query = etSearch.getText().toString();
+        if(!adding){
+            query = etSearch.getText().toString();
+        }
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=227c750bb7714fc39ef1559ef1bd8329";
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -71,7 +108,11 @@ public class searchActivity extends AppCompatActivity
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
-                    articles.clear();
+                    if(!adding) {
+                        articles.clear();
+                    } else {
+                        adding = false;
+                    }
                     articles.addAll(Article.convirtArray(response.getJSONObject("response").getJSONArray("docs")));
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
@@ -108,4 +149,5 @@ public class searchActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
 }
