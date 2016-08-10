@@ -13,9 +13,24 @@ public class Article {
     public String link;
     public String headline;
     public String imagePath;
+    public String date;
+    public String topic;
+    public int words;
 
     public String getLink() {
         return link;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public int getWords() {
+        return words;
     }
 
     public String getHeadline() {
@@ -30,6 +45,9 @@ public class Article {
         try {
             link = myObject.getString("web_url");
             headline = myObject.getJSONObject("headline").getString("main");
+            date = myObject.getString("pub_date");
+            topic = myObject.getString("news_desk");
+            words = myObject.getInt("word_count");
 
             JSONArray media = myObject.getJSONArray("multimedia");
 

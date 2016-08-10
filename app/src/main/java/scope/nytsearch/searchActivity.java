@@ -1,5 +1,6 @@
 package scope.nytsearch;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -26,7 +28,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class searchActivity extends AppCompatActivity
 {
-
+    private final int REQUEST_CODE = 20;
     EditText etSearch;
     Button btnSearch;
     RecyclerView rvResults;
@@ -34,6 +36,7 @@ public class searchActivity extends AppCompatActivity
     ArticleArrayAdapter adapter;
     String query;
     Boolean adding = false;
+    Restrictions restriction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class searchActivity extends AppCompatActivity
         rvResults.setAdapter(adapter);
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(manager);
+        restriction = new Restrictions();
         rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(manager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -113,7 +117,9 @@ public class searchActivity extends AppCompatActivity
                     } else {
                         adding = false;
                     }
-                    articles.addAll(Article.convirtArray(response.getJSONObject("response").getJSONArray("docs")));
+                    ArrayList<Article> validArticles = vetArticles(Article.convirtArray(response.getJSONObject("response").getJSONArray("docs")));
+
+                    articles.addAll(validArticles);
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -125,7 +131,30 @@ public class searchActivity extends AppCompatActivity
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+    }
 
+    public ArrayList<Article> vetArticles(ArrayList<Article> allArticles){
+        ArrayList<Article> qualified = new ArrayList<Article>();
+        for(int x = 0; x < allArticles.size(); x++){
+            qualified.add(allArticles.get(x));
+            Article a = allArticles.get(x);
+            if(restriction.isUsed().get(0)){
+                //add restrictions here
+            }
+            if(restriction.isUsed().get(1)){
+                //add restrictions here
+            }
+            if(restriction.isUsed().get(2)){
+                //add restrictions here
+            }
+            if(restriction.isUsed().get(3)){
+                //add restrictions here
+            }
+            if(restriction.isUsed().get(4)){
+                //add restrictions here
+            }
+        }
+        return allArticles;
     }
 
     @Override
@@ -148,6 +177,19 @@ public class searchActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            restriction = Parcels.unwrap(data.getParcelableExtra("restrictions"));
+        }
+    }
+
+    public void getFilter(View v){
+        Intent i = new Intent(getApplicationContext(), filterActivity.class);
+        startActivityForResult(i, REQUEST_CODE);
     }
 
 }

@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:inputType="date"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/etStartDate"
         android:layout_below="@+id/textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:text="End Date:"
         android:id="@+id/textView2"
-        android:layout_below="@+id/editText"
+        android:layout_below="@+id/etStartDate"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:inputType="date"
         android:ems="10"
-        android:id="@+id/editText2"
+        android:id="@+id/etEndDate"
         android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:text="Minimum Length:"
         android:id="@+id/textView3"
-        android:layout_below="@+id/editText2"
+        android:layout_below="@+id/etEndDate"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editText3"
+        android:id="@+id/etMinWords"
         android:layout_below="@+id/textView3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:text="Maximum Length:"
         android:id="@+id/textView4"
-        android:layout_below="@+id/editText3"
+        android:layout_below="@+id/etMinWords"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editText4"
+        android:id="@+id/etMaxWords"
         android:layout_below="@+id/textView4"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -93,15 +93,16 @@
         android:layout_height="wrap_content"
         android:text="Topics:"
         android:id="@+id/textView5"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/etMaxWords"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="60dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Culture"
-        android:id="@+id/checkBox"
+        android:id="@+id/cbCulture"
         android:layout_below="@+id/textView5"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -111,8 +112,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Fashion"
-        android:id="@+id/checkBox2"
-        android:layout_below="@+id/checkBox"
+        android:id="@+id/cbFashion"
+        android:layout_below="@+id/cbCulture"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:checked="false" />
@@ -121,7 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Foreign"
-        android:id="@+id/checkBox3"
+        android:id="@+id/cbForeign"
         android:checked="false"
         android:layout_below="@+id/textView5"
         android:layout_centerHorizontal="true" />
@@ -130,10 +131,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sports"
-        android:id="@+id/checkBox4"
-        android:layout_below="@+id/checkBox3"
-        android:layout_alignLeft="@+id/checkBox3"
-        android:layout_alignStart="@+id/checkBox3"
+        android:id="@+id/cbSports"
+        android:layout_below="@+id/cbForeign"
+        android:layout_alignLeft="@+id/cbForeign"
+        android:layout_alignStart="@+id/cbForeign"
         android:checked="false" />
 
     <Button
@@ -141,8 +142,9 @@
         android:layout_height="wrap_content"
         android:text="Save"
         android:id="@+id/btnSave"
+        android:onClick="saveFilter"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/checkBox2" />
+        android:layout_below="@+id/cbFashion" />
 
 </RelativeLayout>
